@@ -1,0 +1,666 @@
+openapi: 3.0.0
+info:
+  title: GitParse API
+  description: This is a documentation of GitParse API.
+  version: 1.0.0
+servers:
+  - url: "https://gitparse"
+paths:
+
+  /projects:
+    get:
+      summary: List all projects (repositories)
+      description: Get a list of all visible projects across Git for the authenticated user.
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 1
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+
+      responses:
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+        '200':
+          description: A list of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}:
+    get:
+      summary: Get a repository
+      description: Get a repository by repositoryId
+      parameters:
+        # - name: resourceOwner
+        #   in: path
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+
+      responses:
+        '400':
+          description: Invalid input
+        '404':
+          description: Repository not found
+        '401':
+          description: Unauthorized
+        '200':
+          description: Repository info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/members/:
+    post:
+      summary: Add contributor to repository
+      description: Add contributor to repository by repositoryId
+      parameters:
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+      # requestBody:
+      #   content:
+      #     application:
+      #       schema:
+      #         $ref: '#/components/schemas/AddUserDto'
+          
+
+      responses:
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+        '401':
+          description: Unauthorized
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/statis:
+    get:
+      summary: Get repository statistics
+      description: Get repository statistics by repositoryId
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+      # requestBody:
+
+      responses:
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '200':
+          description: Project statistics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StatisticsDto'
+        
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/issues:
+    get:
+      summary: Get repository issues
+      description: Get repository issues by repositoryId
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 1
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+      # requestBody:
+
+      responses:
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '200':
+          description: A list of issues
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IssueDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/issues/{issueId}:
+    get:
+      summary: Get issue info
+      description: Get issue info by issueId
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issueId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '400':
+          description: Invalid input
+        '404':
+          description: Issue not found
+        '401':
+          description: Unauthorized
+        '200':
+          description: Issue info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/pipelines:
+    get:
+      summary: Get repository pipelines
+      description: Get repository pipelines by repositoryId
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 1
+        - name: perPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: userId
+          in: query
+          required: false
+          schema:
+            type: string
+      # requestBody:
+
+      responses:
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '200':
+          description: A list of pipelines
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PipelineDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+
+  /projects/{repositoryId}/pipelines/{pipelineId}:
+    get:
+      summary: Get pipeline info
+      description: Get pipeline info by pipelineId
+      parameters:
+        # - name: platformName
+        #   in: query
+        #   required: true
+        #   schema:
+        #     type: string
+        - name: repositoryId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: pipelineId
+          in: path
+          required: true
+          schema:
+            type: string
+
+      responses:
+        '400':
+          description: Invalid input
+        '404':
+          description: Pipeline not found
+        '401':
+          description: Unauthorized
+        '200':
+          description: Pipeline info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelineDto'
+      security:
+        - gitlab_auth:
+            - write:users
+              read:data
+        - github_auth:
+            - write:users
+              read:data
+              
+  # /projects/{repositoryId}/
+
+components:
+  schemas:
+
+    StatisticsDto:
+      type: object
+      properties:
+        stats:
+          $ref: '#/components/schemas/StatsDto'
+        datetime:
+          type: string
+          format: date-time
+        ShallowUserDto:
+          $ref: '#/components/schemas/AuthorDto'
+        BranchDto:
+          $ref: '#/components/schemas/BranchDto'
+    StatsDto:
+      type: object
+      properties:
+        additions:
+          type: integer
+        deletions:
+          type: integer
+        total:
+          type: integer
+    CommitDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        gitlabId:
+          type: string
+          format: uuid
+        githubId:
+          type: integer
+          format: int64
+        title:
+          type: string
+        committerName:
+          type: string
+        committerEmail:
+          type: string
+        committedDate:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+        webUrl:
+          type: string
+        stats:
+          $ref: '#/components/schemas/StatsDto'
+    AuthorDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        webUrl:
+          type: string
+        name:
+          type: string
+        avatarUrl:
+          type: string
+        username:
+          type: string
+    IssueDto:
+      type: object
+      properties:
+        state:
+          type: string
+        description:
+          type: string
+        author:
+          $ref: '#/components/schemas/AuthorDto'
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        dueDate:
+          type: string
+          format: date-time
+        webUrl:
+          type: string
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The user ID
+        username:
+          type: string
+          description: The username of the user
+        name:
+          type: string
+          description: The full name of the user
+        state:
+          type: string
+          enum: [ active, inactive ]
+          description: The current state of the user account
+        locked:
+          type: boolean
+          description: Indicates if the user account is locked
+        avatar_url:
+          type: string
+          format: uri
+          description: URL to the user's avatar image
+        web_url:
+          type: string
+          format: uri
+          description: URL to the user's profile page
+      required:
+        - id
+        - username
+        - name
+        - state
+        - locked
+        - avatar_url
+        - web_url
+    PipelineDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          description: The ID of the pipeline
+        iid:
+          type: integer
+          format: int32
+          description: The internal ID of the pipeline
+        project_id:
+          type: integer
+          format: int32
+          description: The ID of the project associated with the pipeline
+        status:
+          type: string
+          description: The current status of the pipeline
+          enum: [ pending, running, success, failed, canceled ]
+        source:
+          type: string
+          description: The source trigger of the pipeline
+        ref:
+          type: string
+          description: The reference (branch or tag) the pipeline is using
+        sha:
+          type: string
+          description: The SHA hash of the commit associated with the pipeline
+        name:
+          type: string
+          description: The name of the pipeline
+        web_url:
+          type: string
+          format: uri
+          description: URL to view the pipeline details
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time when the pipeline was created
+        updated_at:
+          type: string
+          format: date-time
+          description: The date and time when the pipeline was last updated
+      required:
+        - id
+        - iid
+        - project_id
+        - status
+        - source
+        - ref
+        - sha
+        - name
+        - web_url
+        - created_at
+        - updated_at
+    BranchDto:
+      type: object
+      properties:
+        name:
+          type: string
+        web_url:
+          type: string
+          format: uri
+        commit:
+          $ref: '#/components/schemas/CommitDto'
+    ProjectDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier of the project.
+        description:
+          type: string
+          description: Description of the project.
+        name:
+          type: string
+          description: The name of the project
+        created_at:
+          type: string
+          format: date-time
+          description: The date and time the project was created.
+        default_branch:
+          type: string
+          description: The name of the main branch of the project.
+        web_url:
+          type: string
+          format: uri
+          description: The URL for viewing the project in the web interface.
+        visibility:
+          type: string
+          description: The visibility level of the project (for example, public or private).
+      required:
+        - id
+        - description
+        - name
+        - created_at
+        - default_branch
+        - web_url
+        - visibility
+  securitySchemes:
+    gitlab_auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://gitlab.com/oauth/authorize
+          tokenUrl: https://gitlab.com/oauth/token
+          scopes:
+            write:users: edit user to repository
+            read:data: read project info
+    github_auth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://github.com/login/oauth/authorize
+          tokenUrl: https://github.com/login/oauth/access_token
+          scopes:
+            write:users: edit user to repository
+            read:data: read project info

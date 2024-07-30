@@ -1,0 +1,332 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: git_users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: gitlab_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: github_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: repository
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: platform
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: default_branch
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 3
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
+      id: 4
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: branches
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: commit_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repository_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: branches
+            baseColumnNames: repository_id
+            referencedTableName: repository
+            referencedColumnNames: id
+            constraintName: fk_branches_repository
+
+  - changeSet:
+      id: 5
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: commits
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: gitlab_id
+                  type: UUID
+                  constraints:
+                    nullable: true
+              - column:
+                  name: github_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: author
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: message
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: timestamp
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: additions
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deletions
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: branch_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repository_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: commits
+            baseColumnNames: author
+            referencedTableName: git_users
+            referencedColumnNames: id
+            constraintName: fk_commits_author
+        - addForeignKeyConstraint:
+            baseTableName: commits
+            baseColumnNames: repository_id
+            referencedTableName: repository
+            referencedColumnNames: id
+            constraintName: fk_commits_repository
+        - addForeignKeyConstraint:
+            baseTableName: commits
+            baseColumnNames: branch_id
+            referencedTableName: branches
+            referencedColumnNames: id
+            constraintName: fk_commits_branch
+        - addForeignKeyConstraint:
+            baseTableName: branches
+            baseColumnNames: commit_id
+            referencedTableName: commits
+            referencedColumnNames: id
+            constraintName: fk_branches_commit
+
+  - changeSet:
+      id: 6
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: files
+            columns:
+              - column:
+                  name: sha
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: branch_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: filename
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: additions
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deletions
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: changes
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: previous_filename
+                  type: VARCHAR(255)
+              - column:
+                  name: patch
+                  type: TEXT
+        - addForeignKeyConstraint:
+            baseTableName: files
+            baseColumnNames: branch_id
+            referencedTableName: branches
+            referencedColumnNames: id
+            constraintName: fk_files_branch
+
+  - changeSet:
+      id: 7
+      author: LudwigAndreas
+      changes:
+        - createTable:
+            tableName: oauth2_authorized_client
+            columns:
+              - column:
+                  name: client_registration_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: principal_name
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: access_token_type
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_value
+                  type: BLOB
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_issued_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_expires_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_scopes
+                  type: VARCHAR(1000)
+              - column:
+                  name: refresh_token_value
+                  type: BLOB
+              - column:
+                  name: refresh_token_issued_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: 'CURRENT_TIMESTAMP'
+

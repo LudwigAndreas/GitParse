@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gitparse
+  security:
+    oauth2:
+      client:
+        registration:
+          gitlab:
+            provider: gitlab
+            client-id: 7b8bafd248101b3b06308f5ee6732effb208ce76c02ab92c563eced41dfa0161
+            client-secret: gloas-41b6654994c9b729a308dd11a5d21250e5829af77ee293970a38d4d555cdbc01
+            scope: write_repository,api,read_user,read_repository,read_observability,profile,email,openid
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/gitlab
+          github:
+            provider: github
+            client-id: Ov23liQVALExYa8rngN9
+            client-secret: 46643fb3b469e6276a8eace88bc54cdcdb9ebad2
+            scope: repo, user
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/login/oauth2/code/github
+        provider:
+          gitlab:
+            issuer-uri: https://gitlab.com
+            authorization-uri: https://gitlab.com/oauth/authorize
+            token-uri: https://gitlab.com/oauth/token
+            user-info-uri: https://gitlab.com/oauth/userinfo
+            jwk-set-uri: https://gitlab.com/oauth/discovery/keys
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+  codec:
+    max-in-memory-size: 16MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gitparse
+    username: gitparse
+    password: gitparse
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog.yml
+    enabled: true
+
+api:
+  gitlab:
+    uri: https://gitlab.com/api/v4
+  github:
+    uri: https://api.github.com
+
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: "*"
+
+app:
+  cors:
+    allowed-origins: http://localhost:3000, http://localhost:8080, http://localhost:5173
+  oauth2:
+    authorized-redirect-uris: http://localhost:3000/oauth2/redirect, http://localhost:5173/oauth2/redirect

@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  app-db:
+    image: 'postgres:13.1-alpine'
+    container_name: app-db
+    environment:
+      - POSTGRES_DB=gitparse
+      - POSTGRES_USER=gitparse
+      - POSTGRES_PASSWORD=gitparse
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: [ 'CMD-SHELL', 'psql -h localhost -U $${POSTGRES_USER} -c select 1 -d $${POSTGRES_DB}' ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+volumes:
+  db-data:
