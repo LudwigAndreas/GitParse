@@ -1,66 +1,111 @@
 # Git Unified Admin Panel
 
-## Project overview
+🚧 Project Status: In Progress 🚧
 
-Github & Gitlab Unified Admin Panel
+**Note**: This project is currently under development. Not all features have been implemented yet. Please refer to the Features section for details on what has been completed and what is still in progress.
 
-## Description
+## Overview
 
-The project is a web application that provides an administrative panel for managing users and tasks on Github and Gitlab platforms, as well for monitoring commit statistics. The application is devided into frontend and backend parts and is implemented in Java using a microservice architecture.
+The project is a web application that provides an administrative panel for managing users and tasks on Github and Gitlab platforms, as well for monitoring commit statistics. The application is divided into frontend and backend parts and is implemented in Java using a microservice architecture.
 
-## Project Goals
+## Features
 
-The main goals of the project are to create a user-frendly and functional administrative panel that allows:
+- [x] Implementation of extensible application backend architecture
+- [x] Unification of gitlab and github api
+- [x] Adding OAuth2 authentication for access to github and gitlab
+- [ ] Saving statistics to database
+- [x] Add ability to view statistics as a table
+- [ ] Add ability to view statistics as a chart
+- [ ] Adding sorting, filtering, pagination for queries
 
-- Adding users to projects on GitHub and GitLab.
-- Automatically collecting and displaying commit statistics.
-- Managing tasks and comments.
-- Tracking pipeline events.
+## Architecture
 
-## Installation
+### Components
+
+- [ ] **Frontend** - Vite, ReactJS Frontend application
+- [ ] **Backend** - Java Spring Boot application that contains business logic
+## Getting Started
 
 ### Prerequisites
 
-- Java 11 or higher
-- Node.js and npm
-- Docker and Docker Compose
+- **Docker**: Containerization
+- **Docker Compose**: Deployment
 
-### Backend Setup
+### Installation
 
-Clone the repository:
+1. Clone the repository
 
-```bash
-git clone https://github.com/your-repo/GitHub-GitLab-Admin-Panel.git
-cd GitHub-GitLab-Admin-Panel/backend
+   ```sh
+   git clone https://github.com/LudwigAndreas/GitParse.git
+   ```
+
+2. Change directory
+
+   ```sh
+    cd GitParse
+    ```
+
+3. Build the Docker images
+
+   ```sh
+   docker-compose build
+   ```
+
+4. Start the services
+
+   ```sh
+    docker-compose up
+    ```
+
+## Services
+
+### Backend
+
+Backend application is used for api unification, saving to database and storing user data. Backend implemented as monolithic service. The architecture was chosen because of the time to develop an MVP.
+
+Backend service can be accessed at [http://localhost:8080](http://localhost:8080)
+
+### Frontend
+
+The frontend is developed on ReactJS, Vite, Tailwind, Shadcn, Radix-ui stack. It allows you to get data representation in the form of tables and charts. For the most part, shadcn components were used for visualization.
+
+Frontend service can be accessed at [http://localhost:3000](http://localhost:3000)
+
+## Configuration
+
+### Environment Variables
+
+The services are configured using environment variables. The environment variables are defined in the `.env` file.
+
+```env
+# Backend
+API_URL = http://localhost:8080
+
+
 ```
 
-Run postgres.yml docker compose file:
+## Deployment
 
-```bash
-docker-compose -f docker/postgres.yml up -d
-```
+### Docker Compose
 
-Build and run the backend application:
+The application is containerized using Docker and deployed using Docker Compose. The services are defined in the `docker-compose.yml` file.
 
-```bash
-./mvnw spring-boot:run
-```
-
-Navigate to the frontend directory:
-
-```bash
-cd ../frontend
-```
-
-Install dependencies and start the frontend application:
-
-```bash
-npm install
-npm start
+```sh
+docker-compose up
 ```
 
 ## Usage
 
-Open your web browser and navigate to [http://localhost:3000](http://localhost:3000).
+Examples of how to use the API endpoints described in the `docs` directory. (**Not implemented yet**)
 
-Use the administrative panel to manage users, tasks, and monitor commit statistics on GitHub and GitLab.
+### Authentication
+
+(**Not implemented yet**)
+
+### API Requests
+
+Documentation for the API endpoints can be found in the `docs` directory. (**Not implemented yet**)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
